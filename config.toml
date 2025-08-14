@@ -1,0 +1,189 @@
+# proactive_talk - 自动生成的配置文件
+# 智能主动发言系统 - 低频率高质量的机器人主动互动
+
+[plugin]
+
+# 启用主动发言插件
+enabled = true
+
+# 调试模式
+debug_mode = false
+
+
+[frequency_control]
+
+# 每日最大主动发言次数
+max_daily_triggers = 5
+
+# 情绪触发每日最大次数
+mood_max_daily = 2
+
+# 随机触发每日最大次数
+random_max_daily = 3
+
+# 两次主动发言最小间隔(小时)
+min_interval_hours = 2.0
+
+
+[mood_trigger]
+
+# 启用情绪感知触发
+enabled = true
+
+# 情绪变化时的触发概率
+trigger_probability = 0.15
+
+# 触发的情绪变化阈值
+mood_threshold = "显著变化"
+
+
+[random_trigger]
+
+# 启用随机触发
+enabled = true
+
+# 最小间隔时间(小时)
+min_interval_hours = 3.0
+
+# 最大间隔时间(小时)
+max_interval_hours = 8.0
+
+
+[random_event]
+
+# 随机事件式开场（与人设匹配的日常/番剧/校园/工作等）
+enabled = true
+
+# 在随机触发路径中采用随机事件式开场的概率
+probability = 0.55
+
+# 随机事件主题池
+themes = ['anime', 'campus', 'daily', 'work', 'games', 'travel', 'food']
+
+# 允许以“有点无聊，想找你聊聊”的开场
+allow_bored = true
+
+# 无聊式开场出现概率
+bored_probability = 0.35
+
+
+[llm_judge]
+
+# 使用LLM最终判断
+use_llm_final_decision = true
+
+# 判断使用的模型
+judge_model = "utils_small"
+
+# LLM回答不明确时(随机触发)的放行概率
+ambiguous_allow_rate_random = 0.5
+
+# LLM回答不明确时(情绪触发)的放行概率
+ambiguous_allow_rate_mood = 0.6
+
+# LLM失败或无响应时的放行概率
+failure_allow_rate = 0.5
+
+# 启用正向偏置(对'也许/可能'等倾向放行)
+positive_bias = true
+
+
+[content_generation]
+
+# 内容生成所用模型
+model = "chat"
+
+# 最小字数(用于模板/校验)
+min_length = 10
+
+# 最大字数(用于模板/校验)
+max_length = 60
+
+# 语气风格: warm_natural/humorous_light/gentle_care
+tone = "warm_natural"
+
+# 是否融合最近上下文片段
+use_recent_context = true
+
+# 用于融合的最近消息条数
+recent_context_messages = 3
+
+# 每条上下文片段最大字符数
+max_snippet_chars = 24
+
+# 需要避免的模板化短语
+avoid_phrases = ['在忙什么呢？', '有空聊聊吗？', '最近怎么样？', '聊聊天吧']
+
+# 建议以简短问题收尾的倾向(0-1)
+ask_follow_up_probability = 0.6
+
+# 开启精简开场白模式
+short_mode = true
+
+# 目标字数(短句优先)
+target_length = 20
+
+# 可选风格集合
+variety_styles = ['question', 'observation', 'context', 'emoji', 'teaser']
+
+# 风格权重，如 'style:weight'
+style_weights = ['question:1.0', 'observation:1.0', 'context:1.0', 'emoji:0.8', 'teaser:0.8']
+
+
+[targeting]
+
+# 启用私聊主动触发
+enable_private = true
+
+# 启用群聊主动触发
+enable_group = false
+
+# 私聊白名单
+target_private_whitelist = []
+
+# 群聊白名单
+target_groups = []
+
+
+[followup_boost]
+
+# 主动消息后临时提升该会话回复意愿
+enabled = true
+
+# 主动后生效窗口(秒)
+window_seconds = 300
+
+# 窗口内设置的会话意愿值[0-1]
+willing_value = 0.85
+
+
+[error_handling]
+
+# API调用最大重试次数
+max_retry_attempts = 3
+
+# 重试间隔秒数
+retry_delay_seconds = 5
+
+# 启用降级机制
+fallback_enabled = true
+
+# 连续失败N次后停止系统
+stop_on_consecutive_failures = 10
+
+# 错误后冷却时间（分钟）
+error_cooldown_minutes = 30
+
+# 安全模式：确保错误不影响正常聊天
+safe_mode = true
+
+
+[action]
+
+# 启用传统Action组件(建议关闭)
+enable_action_proactive_greet = false
+
+# 传统Action基础触发概率
+base_trigger_probability = 0.001
+
+
