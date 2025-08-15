@@ -60,8 +60,21 @@ class ProactiveManager:
         
         logger.info(f"[主动管理器] 初始化完成")
         logger.info(f"  • LLM判断: {'启用' if self.use_llm_judge else '禁用'}")
-        logger.info(f"  • 目标私聊: {len(self.target_users)}个用户")
-        logger.info(f"  • 目标群聊: {len(self.target_groups)}个群")
+        
+        # 计算实际可用目标数量（包括适配器白名单）
+        try:
+            actual_targets = self._get_available_targets()
+            private_targets = [t for t in actual_targets if t.startswith("private:")]
+            group_targets = [t for t in actual_targets if t.startswith("group:")]
+            logger.info(f"  • 目标私聊: {len(private_targets)}个用户")
+            logger.info(f"  • 目标群聊: {len(group_targets)}个群")
+            if len(private_targets) > 0:
+                logger.debug(f"  • 私聊目标: {[t.split(':')[1] for t in private_targets[:3]]}{'...' if len(private_targets) > 3 else ''}")
+        except Exception as e:
+            logger.warning(f"  • 目标计算失败: {e}")
+            logger.info(f"  • 目标私聊: {len(self.target_users)}个用户(插件配置)")
+            logger.info(f"  • 目标群聊: {len(self.target_groups)}个群(插件配置)")
+        
         logger.info(f"  • 错误处理: 重试{self.max_retry_attempts}次, 安全模式{'开启' if self.safe_mode else '关闭'}")
         logger.info(f"  • 调试模式: {'开启(快速循环)' if self.debug_mode else '关闭'}")
     
@@ -307,25 +320,50 @@ class ProactiveManager:
         plugin_priv = [str(x) for x in (self.config.get("targeting", {}).get("target_private_whitelist", []) or [])]
         plugin_group = [str(x) for x in (self.config.get("targeting", {}).get("target_groups", []) or [])]
 
-        # 读取适配器白名单
+        # 读取适配器白名单（支持Docker和开发环境）
         adapter_priv: list[str] = []
         adapter_group: list[str] = []
         try:
-            from src.config.config import global_config
-            chat_cfg = getattr(global_config, "chat", None)
-            if chat_cfg:
+            import tomlkit
+            import os
+            # 适配器配置文件路径
+            adapter_config_paths = [
+                # Docker环境：需要挂载 ./docker-config/adapters/config.toml:/MaiMBot/adapters_config.toml
+                "/MaiMBot/adapters_config.toml",
+                
+                # 开发环境：相对路径
+                "../docker-config/adapters/config.toml",
+                "../../docker-config/adapters/config.toml", 
+                "./docker-config/adapters/config.toml",
+            ]
+            
+            for config_path in adapter_config_paths:
                 try:
-                    if str(getattr(chat_cfg, "private_list_type", "")).lower() == "whitelist":
-                        adapter_priv = [str(x) for x in (getattr(chat_cfg, "private_list", []) or [])]
-                except Exception:
-                    pass
-                try:
-                    if str(getattr(chat_cfg, "group_list_type", "")).lower() == "whitelist":
-                        adapter_group = [str(x) for x in (getattr(chat_cfg, "group_list", []) or [])]
-                except Exception:
-                    pass
+                    if os.path.exists(config_path):
+                        with open(config_path, "r", encoding="utf-8") as f:
+                            adapter_config = tomlkit.load(f)
+                        
+                        chat_section = adapter_config.get("chat", {})
+                        if chat_section:
+                            # 读取私聊白名单
+                            if str(chat_section.get("private_list_type", "")).lower() == "whitelist":
+                                private_list = chat_section.get("private_list", []) or []
+                                adapter_priv = [str(x) for x in private_list]
+                            
+                            # 读取群聊白名单
+                            if str(chat_section.get("group_list_type", "")).lower() == "whitelist":
+                                group_list = chat_section.get("group_list", []) or []
+                                adapter_group = [str(x) for x in group_list]
+                        
+                        logger.debug(f"[目标选择] 成功读取适配器配置: {config_path}")
+                        logger.debug(f"[目标选择] 适配器私聊白名单: {len(adapter_priv)}个用户")
+                        logger.debug(f"[目标选择] 适配器群聊白名单: {len(adapter_group)}个群")
+                        break
+                except Exception as e:
+                    logger.debug(f"[目标选择] 读取配置文件失败 {config_path}: {e}")
+                    continue
         except Exception as e:
-            logger.debug(f"[目标选择] 读取适配器白名单异常: {e}")
+            logger.warning(f"[目标选择] 读取适配器白名单异常: {e}")
 
         # 私聊路径
         if enable_private:
