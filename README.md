@@ -10,14 +10,14 @@
 - 随机事件式开场：动漫/校园/日常/工作/游戏/旅行/美食，或“无聊想聊聊”模式
 
 ## 兼容性
-- 需要宿主版本 ≥ 0.9.0
-- 依赖宿主提供的插件系统与通用 API（消息、人物、LLM）
+- 需要主机版本 ≥ 0.9.0
+- 依赖主机提供的插件系统与通用 API（消息、人物、LLM）
 
 ## 安装（Windows 与 Linux）
-安装的本质：把本插件放到宿主的 `plugins` 目录，然后重启宿主即可完成注册。
+安装的本质：把本插件放到主机的 `plugins` 目录，然后重启主机程序即可完成注册。
 
 - Windows（示例路径）
-  1) 打开宿主目录，例如 `C:\MaiMBot\plugins`
+  1) 打开主机目录，例如 `C:\MaiMBot\plugins`
   2) 任选其一方式获取插件：
      - Git（推荐）：
        ```powershell
@@ -25,10 +25,10 @@
        git clone https://github.com/yhny1001/proactive_talk_plugin.git proactive_talk_plugin
        ```
      - 或下载 ZIP 后解压到 `C:\MaiMBot\plugins\proactive_talk_plugin`
-  3) 重启宿主程序。首次启动会自动生成 `config.toml` 并注册插件
+  3) 重启主机程序。首次启动会自动生成 `config.toml` 并注册插件
 
 - Linux（示例路径）
-  1) 打开宿主目录，例如 `/opt/maimbot/plugins`（或你自己的 `plugins` 目录）
+  1) 打开主机目录，例如 `/opt/maimbot/plugins`（或你自己的 `plugins` 目录）
   2) 获取插件：
      ```bash
      cd /opt/maimbot/plugins
@@ -36,22 +36,22 @@
      # 或使用 SSH
      # git clone git@github.com:yhny1001/proactive_talk_plugin.git proactive_talk_plugin
      ```
-  3) 重启宿主程序。首次启动会自动生成 `config.toml` 并注册插件
+  3) 重启主机程序。首次启动会自动生成 `config.toml` 并注册插件
 
 > 备注
 > - 目录名称可以自取，但建议与仓库名保持一致（`proactive_talk_plugin`）以便维护
 > - 不需要手动创建 `config.toml`，由插件的 schema 在首次运行时自动生成
 
 ## 快速自检
-重启宿主后，检查日志中是否出现类似下面的加载日志（日志名称可能为 `proactive_talk_ext_plugin` 或宿主格式化后的名称）：
+重启主机后，检查日志中是否出现类似下面的加载日志（日志名称可能为 `proactive_talk_ext_plugin` 或主机格式化后的名称）：
 ```
 Loaded plugin: proactive_talk_plugin / proactive_greet
 config generated: plugins/proactive_talk_plugin/config.toml
 ```
 若未看到：
-- 确认插件目录在宿主 `plugins` 目录下
+- 确认插件目录在主机 `plugins` 目录下
 - 确认 `_manifest.json` 与 `plugin.py` 存在且语法正确
-- 查看宿主的错误日志并依据提示修正
+- 查看主机的错误日志并依据提示修正
 
 ## 触发与生成流程（包含“随机无聊”）
 1) 触发（其一）：
@@ -112,7 +112,7 @@ config generated: plugins/proactive_talk_plugin/config.toml
   - failure_allow_rate: LLM 失败/超时时的放行率
   - positive_bias: 正向偏置：对“也许/可能/试试”等语气倾向放行
 - content_generation（内容生成）
-  - model: 生成模型
+  - model: 生成模型（默认 replyer_1，即主聊天模型）
   - min_length, max_length: 长度边界（短句也会校验）
   - tone: 语气风格（如 warm_natural）
   - use_recent_context, recent_context_messages, max_snippet_chars: 上下文融合
@@ -145,8 +145,8 @@ config generated: plugins/proactive_talk_plugin/config.toml
 
 
 ## 调试与观察
-- 宿主控制台/日志文件中搜索关键字：`proactive_talk`、`LLM判断`、`随机触发`、`真实发送`、`跟进加权`
-- 如需更详细日志，可在宿主的日志配置中将本插件 logger 级别调整为 `DEBUG`
+- 主机控制台/日志文件中搜索关键字：`proactive_talk`、`LLM判断`、`随机触发`、`真实发送`、`跟进加权`
+- 如需更详细日志，可在主机的日志配置中将本插件 logger 级别调整为 `DEBUG`
 
 ----
 

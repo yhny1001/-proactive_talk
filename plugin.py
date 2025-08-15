@@ -42,7 +42,7 @@ class ProactiveTalkPlugin(BasePlugin):
     dependencies: list[str] = []
     python_dependencies: list[str] = []
     config_file_name: str = "config.toml"
-    
+
     # 元数据
     author = "AI Assistant"
     description = "智能主动发言系统 - 低频率高质量的机器人主动互动"
@@ -93,7 +93,7 @@ class ProactiveTalkPlugin(BasePlugin):
         },
         
         "content_generation": {
-            "model": ConfigField(type=str, default="chat", description="内容生成模型（主输出模型）"),
+            "model": ConfigField(type=str, default="replyer_1", description="内容生成模型（主输出模型）"),
             "min_length": ConfigField(type=int, default=10, description="生成后长度校验的最小字数"),
             "max_length": ConfigField(type=int, default=60, description="生成后长度校验的最大字数"),
             "tone": ConfigField(type=str, default="warm_natural", description="语气风格：warm_natural/humorous_light/gentle_care"),

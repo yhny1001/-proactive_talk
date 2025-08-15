@@ -765,8 +765,8 @@ class ProactiveManager:
             
             # 获取内容生成模型
             models = llm_api.get_available_models()
-            model_name = self.config.get("content_generation", {}).get("model", "chat")
-            model = models.get(model_name) or models.get("chat") or models.get("utils")
+            model_name = self.config.get("content_generation", {}).get("model", "replyer_1")
+            model = models.get(model_name) or models.get("replyer_1") or models.get("utils_small")
             
             if not model:
                 logger.warning(f"[内容生成] 未找到可用模型，使用模板内容")
