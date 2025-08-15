@@ -1,6 +1,6 @@
-# Proactive Talk 外部插件使用说明
+# Proactive Talk 插件使用说明
 
-本插件提供“情绪触发 + 随机触发”的主动发言能力，完全外置，支持 Docker 热更新与通过 schema 自动生成配置。
+本插件提供“情绪触发 + 随机触发”的主动发言能力，完全外置，可按配置自动生成 `config.toml` 并在宿主中注册。
 
 - 不干扰主聊天：独立触发链路 + 活跃度检测 + 频率控制
 - LLM 最终判断：可配置更积极的放行率与正向偏置
@@ -9,14 +9,49 @@
 - 跟进加权：主动后短时间内提升该会话的回复意愿，便于承接对话
 - 随机事件式开场：动漫/校园/日常/工作/游戏/旅行/美食，或“无聊想聊聊”模式
 
----
+## 兼容性
+- 需要宿主版本 ≥ 0.9.0
+- 依赖宿主提供的插件系统与通用 API（消息、人物、LLM）
 
-## 部署（Docker）
-- 宿主机路径：`./plugins/proactive_talk/`
-- 容器挂载：`./plugins:/MaiMBot/plugins`
-- 禁止手动创建 `config.toml`；由插件 `config_schema` 自动生成
+## 安装（Windows 与 Linux）
+安装的本质：把本插件放到宿主的 `plugins` 目录，然后重启宿主即可完成注册。
 
----
+- Windows（示例路径）
+  1) 打开宿主目录，例如 `C:\MaiMBot\plugins`
+  2) 任选其一方式获取插件：
+     - Git（推荐）：
+       ```powershell
+       cd C:\MaiMBot\plugins
+       git clone https://github.com/yhny1001/proactive_talk_plugin.git proactive_talk_plugin
+       ```
+     - 或下载 ZIP 后解压到 `C:\MaiMBot\plugins\proactive_talk_plugin`
+  3) 重启宿主程序。首次启动会自动生成 `config.toml` 并注册插件
+
+- Linux（示例路径）
+  1) 打开宿主目录，例如 `/opt/maimbot/plugins`（或你自己的 `plugins` 目录）
+  2) 获取插件：
+     ```bash
+     cd /opt/maimbot/plugins
+     git clone https://github.com/yhny1001/proactive_talk_plugin.git proactive_talk_plugin
+     # 或使用 SSH
+     # git clone git@github.com:yhny1001/proactive_talk_plugin.git proactive_talk_plugin
+     ```
+  3) 重启宿主程序。首次启动会自动生成 `config.toml` 并注册插件
+
+> 备注
+> - 目录名称可以自取，但建议与仓库名保持一致（`proactive_talk_plugin`）以便维护
+> - 不需要手动创建 `config.toml`，由插件的 schema 在首次运行时自动生成
+
+## 快速自检
+重启宿主后，检查日志中是否出现类似下面的加载日志（日志名称可能为 `proactive_talk_ext_plugin` 或宿主格式化后的名称）：
+```
+Loaded plugin: proactive_talk_plugin / proactive_greet
+config generated: plugins/proactive_talk_plugin/config.toml
+```
+若未看到：
+- 确认插件目录在宿主 `plugins` 目录下
+- 确认 `_manifest.json` 与 `plugin.py` 存在且语法正确
+- 查看宿主的错误日志并依据提示修正
 
 ## 触发与生成流程（包含“随机无聊”）
 1) 触发（其一）：
@@ -108,15 +143,12 @@
   - 适度降低 `random_event.probability`，必要时关闭 `allow_bored`；
   - 可限定主题（如仅 anime/games）减少噪音。
 
----
 
 ## 调试与观察
-```bash
-docker compose logs core --since=1h | \
-  grep -E "(proactive_talk|启动处理器|情绪触发|随机触发|LLM判断|内容生成|真实发送|跟进加权)"
-```
+- 宿主控制台/日志文件中搜索关键字：`proactive_talk`、`LLM判断`、`随机触发`、`真实发送`、`跟进加权`
+- 如需更详细日志，可在宿主的日志配置中将本插件 logger 级别调整为 `DEBUG`
 
----
+----
 
 ## 版本
 - v2.0.0：LLM 判定 / 真实发送 / 活跃检测 / 个性化生成 / 跟进加权 / 随机事件式开场 / 短句风格
