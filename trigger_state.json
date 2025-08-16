@@ -1,9 +1,9 @@
 {
-  "today": "2025-08-15",
-  "mood_triggers_today": 0,
-  "random_triggers_today": 0,
-  "total_triggers_today": 0,
-  "last_trigger_time": null,
-  "last_mood_trigger": null,
-  "last_random_trigger": null
+  "today": "2025-08-16",
+  "mood_triggers_today": 2,
+  "random_triggers_today": 1,
+  "total_triggers_today": 3,
+  "last_trigger_time": "2025-08-16T20:36:49.938080",
+  "last_mood_trigger": "2025-08-16T10:45:12.899237",
+  "last_random_trigger": "2025-08-16T20:36:49.938080"
 }
