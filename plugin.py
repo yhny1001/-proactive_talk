@@ -26,9 +26,9 @@ from src.plugin_system.base.component_types import ComponentInfo
 from src.common.logger import get_logger
 
 # 导入组件
-from .proactive_greet_action import ProactiveGreetAction
-from .startup_handler import ProactiveStartupHandler
-from .followup_boost_handler import ProactiveFollowupBoostHandler
+from plugins.proactive_talk_plugin.proactive_greet_action import ProactiveGreetAction
+from plugins.proactive_talk_plugin.startup_handler import ProactiveStartupHandler
+from plugins.proactive_talk_plugin.followup_boost_handler import ProactiveFollowupBoostHandler
 
 logger = get_logger(__name__)
 
@@ -93,7 +93,7 @@ class ProactiveTalkPlugin(BasePlugin):
         },
         
         "content_generation": {
-            "model": ConfigField(type=str, default="replyer_1", description="内容生成模型（主输出模型）"),
+            "model": ConfigField(type=str, default="replyer", description="内容生成模型（主输出模型）"),
             "min_length": ConfigField(type=int, default=10, description="生成后长度校验的最小字数"),
             "max_length": ConfigField(type=int, default=60, description="生成后长度校验的最大字数"),
             "tone": ConfigField(type=str, default="warm_natural", description="语气风格：warm_natural/humorous_light/gentle_care"),
