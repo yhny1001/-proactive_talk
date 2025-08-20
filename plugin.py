@@ -4,7 +4,7 @@
 实现低频率、高质量的机器人主动发言功能
 
 创建时间: 2025-08-12
-版本: v2.0.0
+版本: v2.0.1
 作者: AI Assistant
 许可证: MIT License
 """
@@ -46,7 +46,7 @@ class ProactiveTalkPlugin(BasePlugin):
     # 元数据
     author = "AI Assistant"
     description = "智能主动发言系统 - 低频率高质量的机器人主动互动"
-    version = "2.0.0"
+    version = "2.0.1"
     plugin_type = "interactive"
     
     config_schema = {
