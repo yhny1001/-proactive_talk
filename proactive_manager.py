@@ -15,6 +15,7 @@ import random
 from typing import Optional, Dict, Any
 from datetime import datetime, timedelta
 from src.common.logger import get_logger
+from src.plugin_system.apis import chat_api
 # from src.plugin_system.apis import llm_api  # TODO: 完善LLM API调用
 
 # 导入触发控制器
@@ -803,8 +804,8 @@ class ProactiveManager:
             
             # 获取内容生成模型
             models = llm_api.get_available_models()
-            model_name = self.config.get("content_generation", {}).get("model", "replyer_1")
-            model = models.get(model_name) or models.get("replyer_1") or models.get("utils_small")
+            model_name = self.config.get("content_generation", {}).get("model", "replyer")
+            model = models.get(model_name) or models.get("replyer") or models.get("utils_small")
             
             if not model:
                 logger.warning(f"[内容生成] 未找到可用模型，使用模板内容")
@@ -1091,19 +1092,19 @@ class ProactiveManager:
             success = False
             if target_type == "private":
                 # 私聊发送
-                success = await send_api.text_to_user(
-                    content,
-                    target_id,
-                    platform="qq",  # 默认QQ平台
+                user_stream_id = chat_api.get_stream_by_user_id(user_id=str(target_id), platform="qq").stream_id
+                success = await send_api.text_to_stream(
+                    text=content,
+                    stream_id=user_stream_id,
                     typing=True,    # 显示输入状态
                     storage_message=True  # 存储消息记录
                 )
             elif target_type == "group":
                 # 群聊发送  
-                success = await send_api.text_to_group(
-                    content,
-                    target_id,
-                    platform="qq",
+                group_stream_id = chat_api.get_stream_by_group_id(group_id=str(target_id), platform="qq").stream_id
+                success = await send_api.text_to_stream(
+                    text=content,
+                    stream_id=group_stream_id,
                     typing=True,
                     storage_message=True
                 )
