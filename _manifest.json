@@ -7,7 +7,7 @@
         "url": "https://github.com/yhny1001"
     },
     "description": "智能主动发言系统 - 低频率高质量的机器人主动互动",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "homepage_url": "https://github.com/yhny1001/proactive_talk_plugin",
     "repository_url": "https://github.com/yhny1001/proactive_talk_plugin",
     "license": "GPL-3.0-or-later",
