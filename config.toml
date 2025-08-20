@@ -91,7 +91,7 @@ positive_bias = true
 [content_generation]
 
 # 内容生成所用模型
-model = "replyer_1"
+model = "replyer"
 
 # 最小字数(用于模板/校验)
 min_length = 10

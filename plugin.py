@@ -4,7 +4,7 @@
 实现低频率、高质量的机器人主动发言功能
 
 创建时间: 2025-08-12
-版本: v2.0.0
+版本: v2.0.1
 作者: AI Assistant
 许可证: MIT License
 """
@@ -26,9 +26,9 @@ from src.plugin_system.base.component_types import ComponentInfo
 from src.common.logger import get_logger
 
 # 导入组件
-from .proactive_greet_action import ProactiveGreetAction
-from .startup_handler import ProactiveStartupHandler
-from .followup_boost_handler import ProactiveFollowupBoostHandler
+from plugins.proactive_talk_plugin.proactive_greet_action import ProactiveGreetAction
+from plugins.proactive_talk_plugin.startup_handler import ProactiveStartupHandler
+from plugins.proactive_talk_plugin.followup_boost_handler import ProactiveFollowupBoostHandler
 
 logger = get_logger(__name__)
 
@@ -46,7 +46,7 @@ class ProactiveTalkPlugin(BasePlugin):
     # 元数据
     author = "AI Assistant"
     description = "智能主动发言系统 - 低频率高质量的机器人主动互动"
-    version = "2.0.0"
+    version = "2.0.1"
     plugin_type = "interactive"
     
     config_schema = {
@@ -93,7 +93,7 @@ class ProactiveTalkPlugin(BasePlugin):
         },
         
         "content_generation": {
-            "model": ConfigField(type=str, default="replyer_1", description="内容生成模型（主输出模型）"),
+            "model": ConfigField(type=str, default="replyer", description="内容生成模型（主输出模型）"),
             "min_length": ConfigField(type=int, default=10, description="生成后长度校验的最小字数"),
             "max_length": ConfigField(type=int, default=60, description="生成后长度校验的最大字数"),
             "tone": ConfigField(type=str, default="warm_natural", description="语气风格：warm_natural/humorous_light/gentle_care"),
